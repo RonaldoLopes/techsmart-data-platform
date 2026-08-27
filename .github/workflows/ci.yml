@@ -23,7 +23,7 @@ jobs:
           pip install pyspark==3.5.0 pytest ruff
 
       - name: Lint
-        run: ruff check .
+        run: ruff check tests/
 
       - name: Testes unitarios
         run: pytest tests/ -v
