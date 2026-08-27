@@ -1,0 +1,47 @@
+bundle:
+  name: techsmart-data-platform
+
+targets:
+  prd:
+    mode: production
+    workspace:
+      host: https://adb-7405609763616338.18.azuredatabricks.net
+      root_path: /Workspace/Users/ronaldorclopes@gmail.com/.bundle/${bundle.name}/${bundle.target}
+
+resources:
+  jobs:
+    techsmart_pipeline:
+      name: techsmart-pipeline-prd
+      tasks:
+        - task_key: bronze_vendas
+          notebook_task:
+            notebook_path: ./01_bronze/01_bronze_vendas.py
+
+        - task_key: bronze_clima
+          notebook_task:
+            notebook_path: ./01_bronze/02_bronze_clima.py
+
+        - task_key: silver_vendas
+          depends_on:
+            - task_key: bronze_vendas
+          notebook_task:
+            notebook_path: ./02_silver/01_silver_vendas.py
+
+        - task_key: silver_clima
+          depends_on:
+            - task_key: bronze_clima
+          notebook_task:
+            notebook_path: ./02_silver/01_silver_clima.py
+
+        - task_key: silver_vendas_clima
+          depends_on:
+            - task_key: silver_vendas
+            - task_key: silver_clima
+          notebook_task:
+            notebook_path: ./02_silver/02_silver_vendas_clima.py
+
+        - task_key: gold_kpis
+          depends_on:
+            - task_key: silver_vendas_clima
+          notebook_task:
+            notebook_path: ./03_gold/03_kpis.py
