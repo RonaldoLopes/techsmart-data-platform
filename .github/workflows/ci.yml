@@ -28,28 +28,12 @@ jobs:
       - name: Testes unitarios
         run: pytest tests/ -v
 
-  # ---------------------------------------------------------- 2) Terraform
-  terraform:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: hashicorp/setup-terraform@v3
-
-      - name: Formatacao
-        run: terraform -chdir=infra fmt -check
-
-      - name: Validacao
-        run: |
-          terraform -chdir=infra init -backend=false
-          terraform -chdir=infra validate
-
-  # ---------------------------------------------------------- 3) Deploy (desativado por enquanto)
-  # Requer um Databricks Asset Bundle (arquivo databricks.yml na raiz do projeto),
-  # que ainda nao foi configurado. Descomente quando o bundle estiver pronto.
+  # ---------------------------------------------------------- 2) Deploy (desativado por enquanto)
+  # Requer configuracao completa do Databricks Asset Bundle (databricks.yml)
+  # apontando para os jobs/notebooks reais. Descomente quando estiver pronto.
   #
   # deploy:
-  #   needs: [qualidade, terraform]
+  #   needs: [qualidade]
   #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
   #   runs-on: ubuntu-latest
   #   env:
